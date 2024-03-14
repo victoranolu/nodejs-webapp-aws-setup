@@ -5,24 +5,24 @@ resource "aws_iam_role" "iam_role" {
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "ec2.amazonaws.com"
+        {
+            Action = "sts:AssumeRole"
+            Effect = "Allow",
+            Principal = {
+                Service = "ec2.amazonaws.com"
+            },
+            
         }
-      },
     ]
-  })
+})
 }
 
 #Setting up IAM profile role to permit the provisioning of Instances
 resource "aws_iam_instance_profile" "Instance-prod" {
   name = "instance-iam"
-  role = aws_iam_role.role.name
+  role = aws_iam_role.iam_role.name
 } 
 
 #Setting up the application
@@ -68,8 +68,45 @@ resource "aws_elastic_beanstalk_environment" "nodejs-env" {
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
-    name =
-    value = 
+    name = "IaminstanceProfile"
+    value = aws_iam_instance_profile.Instance-prod
+  }
+
+  setting {
+    namespace = "aws:ec2:instances"
+    name = "InstanceTypes"
+    value = "t3.micro"
+  }
+
+  # Here we enable a health check path for the nodejs app 
+  #setting {
+    #namespace = "aws:elasticbeanstalk:application"
+    #name = "Application Healthcheck URL"
+    #value = "HTTPS:443/health"
+  #}
+
+  setting {
+    namespace = "aws:elasticbeanstalk:command"
+    name = "DeploymentPolicy"
+    value = "AllAtOnce"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:command"
+    name = "IgnoreHealthCheck"
+    value = "false"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name = "EnvironmentType"
+    value = "LoadBalanced"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name = "LoadBalancerType"
+    value = "application"
   }
 
 }
