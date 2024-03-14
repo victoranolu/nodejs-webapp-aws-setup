@@ -164,5 +164,4 @@ resource "aws_elastic_beanstalk_environment" "nodejs-env" {
     name = "ListenerEnabled"
     value = "true"
   }
-
 }
