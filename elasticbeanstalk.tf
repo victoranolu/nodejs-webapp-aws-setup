@@ -109,4 +109,60 @@ resource "aws_elastic_beanstalk_environment" "nodejs-env" {
     value = "application"
   }
 
+  # Here another place to put a health check path 
+  #setting {
+    #namespace = "aws:elasticbeanstalk:environment:process:default"
+    #name = "HealthCheckPath"
+    #value = "/"
+  #}
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:process_name"
+    name = "Port"
+    value = "80"
+  }
+
+   setting {
+    namespace = "aws:elasticbeanstalk:environment:process:process_name"
+    name = "Port"
+    value = "443"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:managedactions:platformupdate"
+    name = "UpdateLevel"
+    value = "patch"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:managedactions:platformupdate"
+    name = "UpdateLevel"
+    value = "minor"
+  }
+
+  # Insert the certificate from AWS ACM
+  #setting {
+    #namespace = "aws:elbv2:listener:default"
+    #name = "SSLCerticateArns"
+    #value = ""
+  #}
+
+  setting {
+    namespace = "aws:elbv2:listener:listener_port"
+    name = "ListenerProtocol"
+    value = "HTTPS"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:listener_port"
+    name = "InstanceProtocol"
+    value = "HTTPS"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:listener_port"
+    name = "ListenerEnabled"
+    value = "true"
+  }
+
 }
