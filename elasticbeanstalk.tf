@@ -144,7 +144,7 @@ resource "aws_elastic_beanstalk_environment" "nodejs-env" {
   #setting {
     #namespace = "aws:elbv2:listener:default"
     #name = "SSLCerticateArns"
-    #value = ""
+    #value = "aws_acm_certificate_validation.example.certificate_arn"
   #}
 
   setting {
